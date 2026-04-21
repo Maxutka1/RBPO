@@ -1,0 +1,57 @@
+@"
+stages:
+  - sca
+  - security_gate
+
+variables:
+  TRIVY_SEVERITY: "CRITICAL,HIGH"
+  TRIVY_CACHE_DIR: "\${CI_PROJECT_DIR}/.trivycache"
+
+cache:
+  paths:
+    - .trivycache/
+
+sca_analysis:
+  stage: sca
+  image: aquasec/trivy:latest
+  script:
+    - echo "🔍 Generating SBOM (CycloneDX)"
+    - trivy fs --format cyclonedx --output sbom.json .
+    - echo "🔍 Scanning vulnerabilities (CRITICAL and HIGH)"
+    - trivy fs --severity \$TRIVY_SEVERITY --format json --output trivy_report.json .
+  artifacts:
+    paths:
+      - sbom.json
+      - trivy_report.json
+    expire_in: 1 week
+    when: always
+
+security_gate:
+  stage: security_gate
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache jq curl
+  script:
+    - |
+      echo "🚦 Security Gate: checking critical vulnerabilities"
+      if [ ! -f "trivy_report.json" ]; then
+        echo "❌ trivy_report.json not found!"
+        exit 1
+      fi
+      CRITICAL_COUNT=\$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy_report.json)
+      if [ "\$CRITICAL_COUNT" -gt 0 ]; then
+        echo "❌ Found \$CRITICAL_COUNT CRITICAL vulnerabilities. Build blocked."
+        jq -r '.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL") | " - \(.VulnerabilityID) (\(.PkgName) \(.InstalledVersion)): \(.Title)"' trivy_report.json
+        exit 1
+      else
+        echo "✅ No CRITICAL vulnerabilities found."
+      fi
+    - |
+      echo "🚦 Checking banned components"
+      if grep -q '"PkgName": "django", "InstalledVersion": "3.0"' trivy_report.json; then
+        echo "❌ Banned component found: django 3.0"
+        exit 1
+      fi
+  dependencies:
+    - sca_analysis
+"@ | Out-File -FilePath .gitlab-ci.yml -Encoding utf8

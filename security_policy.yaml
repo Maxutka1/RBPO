@@ -1,0 +1,16 @@
+@"
+version: "1.0"
+metadata:
+  project: "hotel-billing"
+  date: "2026-04-21"
+policy:
+  max_cvss_score: 7.0
+  auto_block_severities: ["CRITICAL"]
+  warn_severities: ["HIGH"]
+  banned_components:
+    - "django@<4.0"
+    - "openssl@<1.1.1"
+  remediation_deadline:
+    CRITICAL: 1
+    HIGH: 7
+"@ | Out-File -FilePath security_policy.yaml -Encoding utf8

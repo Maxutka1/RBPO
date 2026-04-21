@@ -1,0 +1,26 @@
+stages:
+  - sast
+  - security_gate
+
+variables:
+  DOCKER_IMAGE: "sast-hotel:latest"
+
+sast:
+  stage: sast
+  image: $DOCKER_IMAGE
+  script:
+    - bandit -r src/python -f json -o bandit-report.json
+  artifacts:
+    paths:
+      - bandit-report.json
+    expire_in: 1 week
+    when: always
+
+security_gate:
+  stage: security_gate
+  image: $DOCKER_IMAGE
+  script:
+    - python3 ci/security_gate_bandit.py --bandit bandit-report.json --threshold HIGH
+  dependencies:
+    - sast
+  needs: ["sast"]

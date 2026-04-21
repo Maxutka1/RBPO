@@ -1,0 +1,4 @@
+@"
+CVE-2020-24583
+CVE-2021-33503
+"@ | Out-File -FilePath .trivyignore -Encoding utf8

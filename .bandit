@@ -1,0 +1,5 @@
+[bandit]
+exclude = tests, venv, .venv, __pycache__
+skips = B101
+severity = HIGH
+confidence = HIGH

@@ -1,0 +1,29 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    wget \
+    python3 \
+    python3-pip \
+    python3-venv \
+    nodejs \
+    npm \
+    php-cli \
+    composer \
+    && rm -rf /var/lib/apt/lists/*
+
+# Установка SAST-инструментов
+RUN pip3 install --no-cache-dir bandit semgrep
+
+# ESLint с плагинами безопасности
+RUN npm install -g eslint eslint-plugin-security eslint-plugin-no-secrets
+
+# Composer для PHP (опционально)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+WORKDIR /workspace
