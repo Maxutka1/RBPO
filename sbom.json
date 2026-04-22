@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:0ee85a5f-8a4d-4ed8-90bf-61161845a17e",
+  "serialNumber": "urn:uuid:00c96520-beb9-43fa-a87f-046d96d4b407",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-21T18:16:04+00:00",
+    "timestamp": "2026-04-22T22:38:41+00:00",
     "tools": {
       "components": [
         {
@@ -20,7 +20,7 @@
       ]
     },
     "component": {
-      "bom-ref": "7f68b89f-9504-4eed-96cf-be4acb19bb57",
+      "bom-ref": "2acef2d2-7649-4df3-9b55-9f10e59a6e0a",
       "type": "application",
       "name": "/src",
       "properties": [
@@ -33,7 +33,7 @@
   },
   "components": [
     {
-      "bom-ref": "2c9ee158-2ace-4605-9de8-c5c757d5fbf8",
+      "bom-ref": "c7837b88-e311-4926-9aa0-57ecc6bbc60f",
       "type": "application",
       "name": "requirements.txt",
       "properties": [
@@ -89,17 +89,17 @@
   ],
   "dependencies": [
     {
-      "ref": "2c9ee158-2ace-4605-9de8-c5c757d5fbf8",
+      "ref": "2acef2d2-7649-4df3-9b55-9f10e59a6e0a",
+      "dependsOn": [
+        "c7837b88-e311-4926-9aa0-57ecc6bbc60f"
+      ]
+    },
+    {
+      "ref": "c7837b88-e311-4926-9aa0-57ecc6bbc60f",
       "dependsOn": [
         "pkg:pypi/django@3.0",
         "pkg:pypi/flask@2.0.1",
         "pkg:pypi/requests@2.25.0"
-      ]
-    },
-    {
-      "ref": "7f68b89f-9504-4eed-96cf-be4acb19bb57",
-      "dependsOn": [
-        "2c9ee158-2ace-4605-9de8-c5c757d5fbf8"
       ]
     },
     {
