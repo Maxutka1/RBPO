@@ -1,17 +1,12 @@
 name: DAST - OWASP ZAP Scan
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+on: push
 
 jobs:
   dast-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,31 +16,35 @@ jobs:
       - name: Install Flask
         run: pip install flask
 
-      - name: Start web app
+      - name: Start Flask app
         run: |
           python app.py &
-          sleep 5
-          curl -s http://localhost:5000 > /dev/null
+          sleep 10
+          curl -v http://localhost:5000 || exit 1
 
-      - name: OWASP ZAP Full Scan
+      - name: ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.9.0
         with:
           target: 'http://localhost:5000'
           allow_issue_writing: false
           cmd_options: '-r zap_report.html'
 
-      - name: Upload ZAP report
+      - name: Upload report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
+          name: zap_report
           path: zap_report.html
 
-      - name: Security Gate (fail on High)
+      - name: Security Gate
         run: |
+          if [ ! -f zap_report.html ]; then
+            echo "Report not found"
+            exit 1
+          fi
           HIGH_COUNT=$(grep -o 'risk="High"' zap_report.html | wc -l)
           if [ "$HIGH_COUNT" -gt 0 ]; then
-            echo "Found $HIGH_COUNT HIGH vulnerabilities. Build blocked."
+            echo "Blocked: $HIGH_COUNT High vulnerabilities"
             exit 1
           else
-            echo "No HIGH vulnerabilities."
+            echo "No High vulnerabilities"
           fi
