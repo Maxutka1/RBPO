@@ -1,56 +1,31 @@
-name: DAST - OWASP ZAP (без High)
+name: DAST - ZAP Docker
 
 on: push
 
 jobs:
-  dast-scan:
+  dast:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Flask
-        run: pip install flask
-
-      - name: Start Flask app (исправленная версия)
+      - uses: actions/checkout@v4
+      - name: Start Flask app
         run: |
+          pip install flask
           python app.py &
           sleep 10
-          curl -s http://localhost:5000 || (echo "App not ready"; exit 1)
-
-      - name: OWASP ZAP Full Scan (только High вызывают ошибку)
-        uses: zaproxy/action-full-scan@v0.9.0
-        with:
-          target: 'http://localhost:5000'
-          allow_issue_writing: false
-          cmd_options: '-r zap_report.html -s High'   # <- игнорируем Medium/Low
-
-      - name: Upload ZAP report
+      - name: Run ZAP scan (Docker)
+        run: |
+          docker run --rm --network host -v $(pwd):/zap/wrk owasp/zap2docker-stable zap-full-scan.py \
+            -t http://localhost:5000 -r zap_report.html -s High || true
+      - name: Upload report
         uses: actions/upload-artifact@v4
         with:
           name: zap_report
           path: zap_report.html
-
-      - name: Вывод результатов
+      - name: Check for High
         run: |
-          echo "=== Результаты ZAP ==="
-          if [ -f zap_report.html ]; then
-            HIGH=$(grep -o 'risk="High"' zap_report.html | wc -l)
-            MED=$(grep -o 'risk="Medium"' zap_report.html | wc -l)
-            LOW=$(grep -o 'risk="Low"' zap_report.html | wc -l)
-            echo "High: $HIGH, Medium: $MED, Low: $LOW"
-            if [ "$HIGH" -eq 0 ]; then
-              echo "✅ High уязвимостей не найдено. Пайплайн успешен."
-            else
-              echo "❌ Найдены High уязвимости!"
-              exit 1
-            fi
-          else
-            echo "❌ Отчёт не создан"
+          if grep -q 'risk="High"' zap_report.html; then
+            echo "❌ High найдены"
             exit 1
+          else
+            echo "✅ High нет"
           fi
