@@ -212,7 +212,7 @@ td {
 	</h2>
 
 	<h3>
-		Создано чт, 23 апр. 2026 18:06:58 
+		Создано пт, 24 апр. 2026 16:21:27 
 	</h3>
 
 	<h3>
@@ -245,7 +245,7 @@ td {
 					<div>Средний</div>
 				</td>
 				<td align="center">
-					<div>1</div>
+					<div>2</div>
 				</td>
 			</tr>
 			<tr>
@@ -444,6 +444,14 @@ td {
 				
 				
 				<td align="center">3</td>
+				
+			</tr>
+			<tr>
+				<td><a href="#10020">Отсутствует заголовок (Header) для защиты от кликджекинга </a></td>
+				<td align="center" class="risk-2">Средний</td>
+				
+				
+				<td align="center">1</td>
 				
 			</tr>
 			<tr>
@@ -647,6 +655,98 @@ td {
 					<td width="20%">Идентификатор плагина </td>
 					<td width="80%"><a
 						href="https://www.zaproxy.org/docs/alerts/10038/">10038</a></td>
+				</tr>
+			</table>
+			<div class="spacer"></div>
+		
+			<table class="results">
+				<tr height="24">
+					<th width="20%" class="risk-2"><a
+						id="10020"></a>
+						<div>Средний</div></th>
+					<th class="risk-2">Отсутствует заголовок (Header) для защиты от кликджекинга </th>
+				</tr>
+				<tr>
+					<td width="20%">Описание</td>
+					<td width="80%">
+							<div>The response does not protect against &#39;ClickJacking&#39; attacks. It should include either Content-Security-Policy with &#39;frame-ancestors&#39; directive or X-Frame-Options.</div>
+							
+						</td>
+				</tr>
+				<TR vAlign="top">
+					<TD colspan="2"></TD>
+				</TR>
+				
+					<tr>
+						<td width="20%"
+							class="indent1">URL-адрес</td>
+						<td width="80%"><a href="http://localhost:5000">http://localhost:5000</a></td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Node Name</td>
+						<td width="80%">http://localhost:5000</td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Метод</td>
+						<td width="80%">GET</td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Параметр </td>
+						<td width="80%">x-frame-options</td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Атака</td>
+						<td width="80%"></td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Свидетельство </td>
+						<td width="80%"></td>
+					</tr>
+					<tr>
+						<td width="20%"
+							class="indent2">Дополнительная информация </td>
+						<td width="80%"></td>
+					</tr>
+				
+				<tr>
+					<td width="20%">Экземпляры </td>
+					
+					
+					<td width="80%">1</td>
+					
+				</tr>
+				<tr>
+					<td width="20%">Решение </td>
+					<td width="80%">
+							<div>Современные веб-браузеры поддерживают Content-Security-Policy и заголовки HTTP X-Frame-Options.Убедитесь, что один из них установлен на всех веб-страницах, возвращаемых вашим сайтом/приложением.Если вы ожидаете, что страница будет обрамлена только страницами на вашем сервере (например, это часть FRAMESET), вам следует использовать SAMEORIGIN, в противном случае, если вы никогда не ожидаете, что страница будет обрамлена, вам следует использовать DENY.В качестве альтернативы рассмотрите возможность реализации директивы Content Security Policy «frame-ancestors».</div>
+							
+						</td>
+				</tr>
+				<tr>
+					<td width="20%">Ссылка </td>
+					<td width="80%">
+							<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options">https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options</a>
+							
+						</td>
+				</tr>
+				<tr>
+					<td width="20%">CWE Идентификатор</td>
+					<td width="80%"><a
+						href="https://cwe.mitre.org/data/definitions/1021.html">1021</a></td>
+				</tr>
+				<tr>
+					<td width="20%">WASC ID</td>
+					<td width="80%">15</td>
+				</tr>
+				<tr>
+					<td width="20%">Идентификатор плагина </td>
+					<td width="80%"><a
+						href="https://www.zaproxy.org/docs/alerts/10020/">10020</a></td>
 				</tr>
 			</table>
 			<div class="spacer"></div>
